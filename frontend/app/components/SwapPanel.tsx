@@ -150,6 +150,10 @@ export function SwapPanel() {
             <strong>{inputSymbol} <ArrowDownUp size={13} /> {outputSymbol}</strong>
           </div>
           <div>
+            <span>Trigger</span>
+            <strong>{triggerPrice || "0"} {market.quoteSymbol}</strong>
+          </div>
+          <div>
             <span>Max trigger slice</span>
             <strong>{fillPercent.toFixed(2)}%</strong>
           </div>

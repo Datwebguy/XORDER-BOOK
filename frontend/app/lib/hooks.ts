@@ -12,9 +12,11 @@ export type IndexedOrder = {
   poolId: string;
   kind: "Stop-Loss" | "Take-Profit" | "Trailing Stop";
   amountIn: bigint;
+  remainingIn: bigint;
+  inputToken?: Address;
   outputToken?: Address;
   triggerPriceX96: bigint;
-  status: "Open" | "Triggered" | "Filled" | "Cancelled";
+  status: "Open" | "Triggered" | "Partially Filled" | "Filled" | "Cancelled";
   updatedBlock: bigint;
 };
 
@@ -239,6 +241,8 @@ function reduceLogs(logs: Log[], owner?: Address) {
           poolId: args.poolId as string,
           kind: kindNames[Number(args.kind as bigint)] ?? "Stop-Loss",
           amountIn: args.amountIn as bigint,
+          remainingIn: args.amountIn as bigint,
+          inputToken: args.inputToken as Address | undefined,
           outputToken: args.outputToken as Address | undefined,
           triggerPriceX96: args.triggerPriceX96 as bigint,
           status: "Open",
@@ -250,7 +254,11 @@ function reduceLogs(logs: Log[], owner?: Address) {
       if (!existing) continue;
 
       if (decoded.eventName === "OrderTriggered") existing.status = "Triggered";
-      if (decoded.eventName === "OrderFilled") existing.status = "Filled";
+      if (decoded.eventName === "OrderFilled") {
+        const inputAmount = args.inputAmount as bigint;
+        existing.remainingIn = inputAmount >= existing.remainingIn ? 0n : existing.remainingIn - inputAmount;
+        existing.status = existing.remainingIn === 0n ? "Filled" : "Partially Filled";
+      }
       if (decoded.eventName === "OrderCancelled") existing.status = "Cancelled";
       existing.updatedBlock = log.blockNumber ?? existing.updatedBlock;
     } catch {

@@ -26,6 +26,12 @@ export function triggerPriceX96FromQuotePerBase(price: number) {
   return BigInt(Math.floor(rawToken1PerToken0 * 2 ** 96));
 }
 
+export function quotePerBaseFromTriggerPriceX96(priceX96: bigint) {
+  const rawToken1PerToken0 = Number((priceX96 * 1_000_000_000_000n) >> 96n) / 1_000_000_000_000;
+  const token1PerToken0 = rawToken1PerToken0 * 10 ** (market.token0Decimals - market.token1Decimals);
+  return token1PerToken0 > 0 ? 1 / token1PerToken0 : null;
+}
+
 export function formatUsdPrice(value: number | null) {
   if (!value || !Number.isFinite(value)) return "No pool";
   return new Intl.NumberFormat("en-US", {

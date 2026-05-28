@@ -4,6 +4,7 @@ import { Ban, ExternalLink, Loader2 } from "lucide-react";
 import { encodeFunctionData } from "viem";
 import { appConfig } from "../lib/config";
 import { formatAmount, shortAddress } from "../lib/format";
+import { formatUsdPrice, market, quotePerBaseFromTriggerPriceX96 } from "../lib/market";
 import { useInjectedWallet } from "../lib/wallet";
 import { xordersAbi } from "../lib/xordersAbi";
 import { useXOrdersData } from "./XOrdersDataProvider";
@@ -17,6 +18,16 @@ export function OrdersPanel() {
       appConfig.hookAddress,
       encodeFunctionData({ abi: xordersAbi, functionName: "cancelOrder", args: [orderId] })
     );
+  }
+
+  function decimalsFor(address?: string) {
+    if (!address) return 18;
+    return address.toLowerCase() === market.token0.toLowerCase() ? market.token0Decimals : market.token1Decimals;
+  }
+
+  function symbolFor(address?: string) {
+    if (!address) return market.baseSymbol;
+    return address.toLowerCase() === market.token0.toLowerCase() ? market.quoteSymbol : market.baseSymbol;
   }
 
   return (
@@ -40,7 +51,8 @@ export function OrdersPanel() {
                 <th>Type</th>
                 <th>Owner</th>
                 <th>Amount</th>
-                <th>Trigger X96</th>
+                <th>Trigger</th>
+                <th>Remaining</th>
                 <th>Status</th>
                 <th />
               </tr>
@@ -51,8 +63,9 @@ export function OrdersPanel() {
                   <td>#{order.id.toString()}</td>
                   <td>{order.kind}</td>
                   <td>{shortAddress(order.owner)}</td>
-                  <td>{formatAmount(order.amountIn)}</td>
-                  <td>{order.triggerPriceX96.toString()}</td>
+                  <td>{formatAmount(order.amountIn, decimalsFor(order.inputToken))} {symbolFor(order.inputToken)}</td>
+                  <td>{formatUsdPrice(quotePerBaseFromTriggerPriceX96(order.triggerPriceX96))}</td>
+                  <td>{formatAmount(order.remainingIn, decimalsFor(order.inputToken))} {symbolFor(order.inputToken)}</td>
                   <td><span className={`status ${order.status.replace(/\s/g, "").toLowerCase()}`}>{order.status}</span></td>
                   <td>
                     <div className="rowActions">
