@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ChartCandlestick, DatabaseZap, Layers3, Lock, Radio, ShieldCheck, Zap } from "lucide-react";
+import { ArrowRight, ChartCandlestick, DatabaseZap, Lock, Radio, ShieldCheck, Zap } from "lucide-react";
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
@@ -36,10 +36,8 @@ export default function Home() {
       <nav className="border-b border-white/10 bg-[#05070b]/95">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-md border border-cyan/30 bg-cyan/10">
-              <Layers3 size={18} />
-            </span>
-            <span className="font-semibold">XOrders</span>
+            <img className="h-9 w-9 rounded-md" src="/favicon-64.png" alt="XOrders" />
+            <img className="h-6 w-auto" src="/brand/xorders-logo-header.png" alt="XOrders" />
           </Link>
           <Button asChild size="sm">
             <Link href="/app">
@@ -55,9 +53,7 @@ export default function Home() {
         <div className="relative mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 lg:grid-cols-[1fr_0.92fr]">
           <div>
             <Badge className="mb-6 border-cyan/20 bg-cyan/10 text-cyan">Live on X Layer Mainnet infrastructure</Badge>
-            <h1 className="max-w-4xl text-5xl font-semibold leading-[0.98] text-white md:text-7xl">
-              XOrders
-            </h1>
+            <img className="h-auto w-full max-w-[460px]" src="/brand/xorders-logo-full.png" alt="XOrders" />
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72 md:text-xl">
               On-chain stop-loss and take-profit orders directly inside Uniswap v4 pools on X Layer.
             </p>
@@ -80,7 +76,7 @@ export default function Home() {
             <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-3">
               <div>
                 <p className="text-xs uppercase text-white/42">Live terminal</p>
-                <p className="font-semibold">OKB / USDT</p>
+                <p className="font-semibold">WOKB / USDT0</p>
               </div>
               <Badge className="bg-success/10 text-success">X Layer</Badge>
             </div>
