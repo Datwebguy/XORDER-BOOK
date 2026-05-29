@@ -1,25 +1,27 @@
 "use client";
 
-import { createChart, ColorType, LineSeries, type UTCTimestamp } from "lightweight-charts";
-import { useEffect, useMemo, useRef } from "react";
+import { createChart, ColorType, LineSeries, type IChartApi, type ISeriesApi, type UTCTimestamp } from "lightweight-charts";
+import { useCallback, useEffect, useRef } from "react";
 import { usePoolSlot0 } from "../lib/hooks";
 import { formatUsdPrice, market, quotePerBaseFromSqrtPriceX96 } from "../lib/market";
 
 export function PriceChart() {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const chartRef = useRef<IChartApi | null>(null);
+  const seriesRef = useRef<ISeriesApi<"Line"> | null>(null);
+  const historyRef = useRef<Array<{ time: UTCTimestamp; value: number }>>([]);
+
   const { slot0, error } = usePoolSlot0();
   const price = slot0 ? quotePerBaseFromSqrtPriceX96(slot0.sqrtPriceX96) : null;
 
-  const data = useMemo(() => {
-    if (!price) return [];
-    const now = Math.floor(Date.now() / 1000);
-    return [{ time: now as UTCTimestamp, value: price }];
-  }, [price]);
+  const setupChart = useCallback((node: HTMLDivElement | null) => {
+    if (!node) {
+      chartRef.current?.remove();
+      chartRef.current = null;
+      seriesRef.current = null;
+      return;
+    }
 
-  useEffect(() => {
-    if (!ref.current) return;
-
-    const chart = createChart(ref.current, {
+    const chart = createChart(node, {
       autoSize: true,
       height: 390,
       layout: {
@@ -31,7 +33,7 @@ export function PriceChart() {
         horzLines: { color: "rgba(255,255,255,0.05)" }
       },
       rightPriceScale: { borderColor: "rgba(255,255,255,0.08)" },
-      timeScale: { borderColor: "rgba(255,255,255,0.08)" }
+      timeScale: { borderColor: "rgba(255,255,255,0.08)", timeVisible: true }
     });
 
     const series = chart.addSeries(LineSeries, {
@@ -41,11 +43,34 @@ export function PriceChart() {
       priceLineVisible: true
     });
 
-    series.setData(data);
-    chart.timeScale().fitContent();
+    chartRef.current = chart;
+    seriesRef.current = series;
 
-    return () => chart.remove();
-  }, [data]);
+    if (historyRef.current.length > 0) {
+      series.setData([...historyRef.current]);
+      chart.timeScale().fitContent();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (price === null) return;
+
+    const now = Math.floor(Date.now() / 1000) as UTCTimestamp;
+    const history = historyRef.current;
+
+    if (history.length > 0 && history[history.length - 1].time >= now) {
+      history[history.length - 1].value = price;
+    } else {
+      history.push({ time: now, value: price });
+    }
+
+    if (history.length > 300) history.splice(0, history.length - 300);
+
+    if (seriesRef.current) {
+      seriesRef.current.setData([...history]);
+      chartRef.current?.timeScale().fitContent();
+    }
+  }, [price]);
 
   return (
     <section className="panel chartPanel">
@@ -56,7 +81,11 @@ export function PriceChart() {
         </div>
         <div className="pricePill">{formatUsdPrice(price)}</div>
       </div>
-      {price ? <div ref={ref} className="chart" /> : <div className="emptyState">{error || "Set NEXT_PUBLIC_XORDERS_POOL_ID to show live StateView pricing."}</div>}
+      {price !== null ? (
+        <div ref={setupChart} className="chart" />
+      ) : (
+        <div className="emptyState">{error || "Set NEXT_PUBLIC_XORDERS_POOL_ID to show live StateView pricing."}</div>
+      )}
     </section>
   );
 }

@@ -12,19 +12,20 @@ import { xordersAbi } from "../lib/xordersAbi";
 type OrderKind = "0" | "1" | "2";
 
 export function SwapPanel() {
-  const [currency0] = useState(market.token0);
-  const [currency1] = useState(market.token1);
+  const currency0 = market.token0;
+  const currency1 = market.token1;
+  const fee = String(market.fee);
+  const tickSpacing = String(market.tickSpacing);
   const [inputToken, setInputToken] = useState<Address>(market.token1);
   const [amount, setAmount] = useState("");
   const [triggerPrice, setTriggerPrice] = useState("80");
   const [kind, setKind] = useState<OrderKind>("0");
   const [zeroForOne, setZeroForOne] = useState(false);
-  const [fee] = useState(String(market.fee));
-  const [tickSpacing] = useState(String(market.tickSpacing));
   const [maxFillPercent, setMaxFillPercent] = useState("25");
   const [trailingPercent, setTrailingPercent] = useState("0");
   const [isPending, setIsPending] = useState(false);
-  const [data, setData] = useState<Hex | null>(null);
+  const [txHash, setTxHash] = useState<Hex | null>(null);
+  const [txError, setTxError] = useState<string | null>(null);
   const wallet = useInjectedWallet();
 
   const inputDecimals = inputToken.toLowerCase() === market.token0.toLowerCase() ? market.token0Decimals : market.token1Decimals;
@@ -43,6 +44,8 @@ export function SwapPanel() {
 
   async function approve() {
     setIsPending(true);
+    setTxHash(null);
+    setTxError(null);
     try {
       const tx = await wallet.sendTransaction(
         inputToken as Address,
@@ -52,7 +55,9 @@ export function SwapPanel() {
           args: [appConfig.hookAddress, parsedAmount]
         })
       );
-      setData(tx);
+      setTxHash(tx ?? null);
+    } catch (err) {
+      setTxError(err instanceof Error ? err.message : "Transaction rejected");
     } finally {
       setIsPending(false);
     }
@@ -61,6 +66,8 @@ export function SwapPanel() {
   async function placeOrder(event: FormEvent) {
     event.preventDefault();
     setIsPending(true);
+    setTxHash(null);
+    setTxError(null);
     try {
       const tx = await wallet.sendTransaction(
         appConfig.hookAddress,
@@ -84,7 +91,9 @@ export function SwapPanel() {
           ]
         })
       );
-      setData(tx);
+      setTxHash(tx ?? null);
+    } catch (err) {
+      setTxError(err instanceof Error ? err.message : "Transaction rejected");
     } finally {
       setIsPending(false);
     }
@@ -182,7 +191,15 @@ export function SwapPanel() {
           Place Onchain Order
         </button>
       </form>
-      {data && <div className="notice">Transaction submitted: {data.slice(0, 10)}...</div>}
+      {txHash && (
+        <div className="notice">
+          Submitted —{" "}
+          <a href={`${appConfig.explorerUrl}/tx/${txHash}`} target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>
+            View on explorer ↗
+          </a>
+        </div>
+      )}
+      {txError && <div className="notice" style={{ color: "var(--danger)" }}>{txError}</div>}
       <a className="secondaryButton" href="https://app.uniswap.org/swap?chain=xlayer" target="_blank" rel="noreferrer">
         Open Uniswap Swap
       </a>

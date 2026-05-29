@@ -26,13 +26,14 @@ export type IndexedActivity = {
   orderId: bigint;
   blockNumber: bigint;
   transactionHash: string;
+  indexedAt: number;
 };
 
 const kindNames = ["Stop-Loss", "Take-Profit", "Trailing Stop"] as const;
 const publicClient = createPublicClient({ transport: http(appConfig.rpcUrl) });
-const LOG_BLOCK_CHUNK = 100n;
-const EVENT_POLL_MS = 45_000;
-const LOG_CHUNK_DELAY_MS = 350;
+const LOG_BLOCK_CHUNK = 2000n;
+const EVENT_POLL_MS = 12_000;
+const LOG_CHUNK_DELAY_MS = 200;
 
 export function useXLayerStatus() {
   const [blockNumber, setBlockNumber] = useState<bigint | null>(null);
@@ -169,6 +170,18 @@ export function useXOrdersEvents() {
     }
 
     loadOwner();
+
+    const handleAccountsChanged = (accounts: unknown) => {
+      const addrs = accounts as string[];
+      setOwner((addrs[0] as Address) || undefined);
+      lastScannedBlockRef.current = null;
+      logsRef.current = [];
+    };
+
+    window.ethereum?.on?.("accountsChanged", handleAccountsChanged);
+    return () => {
+      window.ethereum?.removeListener?.("accountsChanged", handleAccountsChanged);
+    };
   }, []);
 
   return useMemo(
@@ -229,7 +242,8 @@ function reduceLogs(logs: Log[], owner?: Address) {
         type: decoded.eventName,
         orderId,
         blockNumber: log.blockNumber ?? 0n,
-        transactionHash: log.transactionHash ?? ""
+        transactionHash: log.transactionHash ?? "",
+        indexedAt: Date.now()
       });
 
       if (decoded.eventName === "OrderPlaced") {
