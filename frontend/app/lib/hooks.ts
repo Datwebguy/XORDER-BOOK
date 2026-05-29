@@ -31,9 +31,10 @@ export type IndexedActivity = {
 
 const kindNames = ["Stop-Loss", "Take-Profit", "Trailing Stop"] as const;
 const publicClient = createPublicClient({ transport: http(appConfig.rpcUrl) });
-const LOG_BLOCK_CHUNK = 2000n;
-const EVENT_POLL_MS = 12_000;
-const LOG_CHUNK_DELAY_MS = 200;
+const LOG_BLOCK_CHUNK = 90n;
+const MAX_BLOCKS_PER_SCAN = 540n;
+const EVENT_POLL_MS = 30_000;
+const LOG_CHUNK_DELAY_MS = 450;
 
 export function useXLayerStatus() {
   const [blockNumber, setBlockNumber] = useState<bigint | null>(null);
@@ -135,20 +136,21 @@ export function useXOrdersEvents() {
           return;
         }
 
-        const newLogs = await getHookLogs(fromBlock, latest);
+        const scanToBlock = fromBlock + MAX_BLOCKS_PER_SCAN - 1n > latest ? latest : fromBlock + MAX_BLOCKS_PER_SCAN - 1n;
+        const newLogs = await getHookLogs(fromBlock, scanToBlock);
 
         if (!active) return;
         const mergedLogs = dedupeLogs([...logsRef.current, ...newLogs]);
         const parsed = reduceLogs(mergedLogs, owner);
         logsRef.current = mergedLogs;
-        lastScannedBlockRef.current = latest;
+        lastScannedBlockRef.current = scanToBlock;
         setOrders(parsed.orders);
         setActivities(parsed.activities);
         setError(null);
       } catch (err) {
         if (!active) return;
         const message = err instanceof Error ? err.message : "Unable to load hook logs";
-        setError(message.includes("rate limit") ? "X Layer RPC is rate limiting log reads. Retrying automatically." : message);
+        setError(message.includes("rate limit") || message.includes("block range") ? "X Layer RPC is limiting log reads. Retrying automatically in smaller batches." : message);
       } finally {
         if (active) setIsLoading(false);
       }

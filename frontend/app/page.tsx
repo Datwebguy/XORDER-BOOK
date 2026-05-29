@@ -36,8 +36,7 @@ export default function Home() {
       <nav className="border-b border-white/10 bg-[#05070b]/95">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-3">
-            <img className="h-9 w-9 rounded-md" src="/favicon-64.png" alt="XOrders" />
-            <img className="h-6 w-auto" src="/brand/xorders-logo-header.png" alt="XOrders" />
+            <img className="h-8 w-auto" src="/brand/xorders-logo-header.png" alt="XOrders" />
           </Link>
           <Button asChild size="sm">
             <Link href="/app">
