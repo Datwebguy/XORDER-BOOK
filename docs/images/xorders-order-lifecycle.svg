@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">XOrders onchain order lifecycle</title>
+  <desc id="desc">Order lifecycle from escrow to pool swap trigger, activity event, partial fill, and cancellation or completion.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#05070b"/>
+      <stop offset="1" stop-color="#0a0f18"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" x2="1">
+      <stop offset="0" stop-color="#42f5b9"/>
+      <stop offset="1" stop-color="#26e6ff"/>
+    </linearGradient>
+    <style>
+      .node{fill:#0b0f0e;stroke:rgba(255,255,255,.15);stroke-width:1.5}
+      .txt{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#f6f8ff}
+      .muted{fill:rgba(255,255,255,.62)}
+      .title{font-size:34px;font-weight:800}
+      .head{font-size:22px;font-weight:800}
+      .body{font-size:16px}
+      .event{fill:#10251f;stroke:#42f5b9;stroke-width:1.5}
+    </style>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <text x="56" y="72" class="txt title">Onchain Lifecycle</text>
+  <text x="56" y="108" class="txt muted body">XOrders does not depend on mock state. The UI follows real hook events from X Layer.</text>
+
+  <rect x="68" y="180" width="210" height="130" rx="12" class="node"/>
+  <text x="96" y="226" class="txt head">OrderPlaced</text>
+  <text x="96" y="258" class="txt muted body">Wallet approves and</text>
+  <text x="96" y="282" class="txt muted body">escrows token input.</text>
+
+  <rect x="372" y="180" width="210" height="130" rx="12" class="node"/>
+  <text x="400" y="226" class="txt head">Watching</text>
+  <text x="400" y="258" class="txt muted body">Normal swaps move</text>
+  <text x="400" y="282" class="txt muted body">pool price.</text>
+
+  <rect x="676" y="180" width="210" height="130" rx="12" class="event"/>
+  <text x="704" y="226" class="txt head">afterSwap()</text>
+  <text x="704" y="258" class="txt muted body">Hook checks threshold</text>
+  <text x="704" y="282" class="txt muted body">against live price.</text>
+
+  <rect x="980" y="180" width="210" height="130" rx="12" class="event"/>
+  <text x="1008" y="226" class="txt head">Triggered</text>
+  <text x="1008" y="258" class="txt muted body">Executable slice is</text>
+  <text x="1008" y="282" class="txt muted body">marked onchain.</text>
+
+  <path d="M278 245H372" stroke="#26e6ff" stroke-width="4"/>
+  <path d="M582 245H676" stroke="#26e6ff" stroke-width="4"/>
+  <path d="M886 245H980" stroke="#26e6ff" stroke-width="4"/>
+
+  <rect x="220" y="430" width="250" height="130" rx="12" class="node"/>
+  <text x="248" y="476" class="txt head">Partial Fill</text>
+  <text x="248" y="508" class="txt muted body">Filler settles only the</text>
+  <text x="248" y="532" class="txt muted body">triggered amount.</text>
+
+  <rect x="520" y="430" width="250" height="130" rx="12" class="node"/>
+  <text x="548" y="476" class="txt head">Remaining Open</text>
+  <text x="548" y="508" class="txt muted body">Unfilled balance stays</text>
+  <text x="548" y="532" class="txt muted body">visible in Active Orders.</text>
+
+  <rect x="820" y="430" width="250" height="130" rx="12" class="node"/>
+  <text x="848" y="476" class="txt head">Cancel or Complete</text>
+  <text x="848" y="508" class="txt muted body">Owner can cancel, or</text>
+  <text x="848" y="532" class="txt muted body">fills reduce balance to 0.</text>
+
+  <path d="M1085 310C1085 380 345 360 345 430" fill="none" stroke="#42f5b9" stroke-width="4"/>
+  <path d="M470 495H520" stroke="#26e6ff" stroke-width="4"/>
+  <path d="M770 495H820" stroke="#26e6ff" stroke-width="4"/>
+
+  <rect x="68" y="610" width="1122" height="50" rx="10" fill="#101614" stroke="rgba(255,255,255,.1)"/>
+  <text x="96" y="642" class="txt body">UI panels update from OrderPlaced, OrderTriggered, OrderFilled, and OrderCancelled logs emitted by the deployed XOrdersHook.</text>
+</svg>

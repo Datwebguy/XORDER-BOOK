@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">How to place an XOrder</title>
+  <desc id="desc">Step-by-step flow for connecting a wallet, selecting order type, approving token escrow, and placing an onchain XOrders order.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1">
+      <stop offset="0" stop-color="#05070b"/>
+      <stop offset="1" stop-color="#07100d"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" x2="1">
+      <stop offset="0" stop-color="#42f5b9"/>
+      <stop offset="1" stop-color="#26e6ff"/>
+    </linearGradient>
+    <style>
+      .card{fill:#0b0f0e;stroke:rgba(255,255,255,.14);stroke-width:1.5}
+      .field{fill:#101614;stroke:rgba(255,255,255,.11);stroke-width:1}
+      .txt{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#f6f8ff}
+      .muted{fill:rgba(255,255,255,.62)}
+      .title{font-size:34px;font-weight:800}
+      .step{font-size:22px;font-weight:800}
+      .body{font-size:17px}
+      .num{font-size:24px;font-weight:900;fill:#06110e}
+    </style>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <text x="56" y="70" class="txt title">XOrders User Flow: Place a Real Onchain Order</text>
+  <text x="56" y="104" class="txt muted body">All actions below use the connected wallet and the deployed XOrdersHook on X Layer Mainnet.</text>
+
+  <g transform="translate(56 150)">
+    <rect width="258" height="360" rx="10" class="card"/>
+    <circle cx="38" cy="40" r="18" fill="url(#accent)"/>
+    <text x="31" y="48" class="txt num">1</text>
+    <text x="68" y="48" class="txt step">Connect</text>
+    <rect x="26" y="86" width="206" height="48" rx="8" class="field"/>
+    <text x="48" y="116" class="txt body">OKX / EVM Wallet</text>
+    <text x="26" y="178" class="txt muted body">Switch to X Layer Mainnet.</text>
+    <text x="26" y="212" class="txt muted body">The app reads your wallet</text>
+    <text x="26" y="238" class="txt muted body">orders from hook events.</text>
+  </g>
+
+  <g transform="translate(360 150)">
+    <rect width="258" height="360" rx="10" class="card"/>
+    <circle cx="38" cy="40" r="18" fill="url(#accent)"/>
+    <text x="31" y="48" class="txt num">2</text>
+    <text x="68" y="48" class="txt step">Choose</text>
+    <rect x="26" y="86" width="206" height="44" rx="8" class="field"/>
+    <text x="48" y="114" class="txt body">Stop-Loss</text>
+    <rect x="26" y="146" width="206" height="44" rx="8" class="field"/>
+    <text x="48" y="174" class="txt body">Take-Profit</text>
+    <rect x="26" y="206" width="206" height="44" rx="8" class="field"/>
+    <text x="48" y="234" class="txt body">Trailing Stop</text>
+    <text x="26" y="300" class="txt muted body">Select sell token and</text>
+    <text x="26" y="326" class="txt muted body">order behavior.</text>
+  </g>
+
+  <g transform="translate(664 150)">
+    <rect width="258" height="360" rx="10" class="card"/>
+    <circle cx="38" cy="40" r="18" fill="url(#accent)"/>
+    <text x="31" y="48" class="txt num">3</text>
+    <text x="68" y="48" class="txt step">Configure</text>
+    <rect x="26" y="86" width="206" height="48" rx="8" class="field"/>
+    <text x="48" y="116" class="txt body">Amount: 0.001 WOKB</text>
+    <rect x="26" y="154" width="206" height="48" rx="8" class="field"/>
+    <text x="48" y="184" class="txt body">Trigger: 80 USDT0</text>
+    <rect x="26" y="222" width="96" height="48" rx="8" class="field"/>
+    <text x="48" y="252" class="txt body">25%</text>
+    <rect x="136" y="222" width="96" height="48" rx="8" class="field"/>
+    <text x="158" y="252" class="txt body">Trail</text>
+    <text x="26" y="316" class="txt muted body">Max fill controls partial</text>
+    <text x="26" y="342" class="txt muted body">execution size.</text>
+  </g>
+
+  <g transform="translate(968 150)">
+    <rect width="258" height="360" rx="10" class="card"/>
+    <circle cx="38" cy="40" r="18" fill="url(#accent)"/>
+    <text x="31" y="48" class="txt num">4</text>
+    <text x="68" y="48" class="txt step">Submit</text>
+    <rect x="26" y="86" width="206" height="52" rx="9" class="field"/>
+    <text x="74" y="119" class="txt body">Approve Hook</text>
+    <rect x="26" y="158" width="206" height="52" rx="9" fill="url(#accent)"/>
+    <text x="56" y="191" class="txt body" fill="#06110e">Place Onchain Order</text>
+    <text x="26" y="270" class="txt muted body">The hook escrows tokens</text>
+    <text x="26" y="296" class="txt muted body">and emits OrderPlaced.</text>
+  </g>
+
+  <path d="M314 330H360" stroke="#26e6ff" stroke-width="3"/>
+  <path d="M618 330H664" stroke="#26e6ff" stroke-width="3"/>
+  <path d="M922 330H968" stroke="#26e6ff" stroke-width="3"/>
+</svg>

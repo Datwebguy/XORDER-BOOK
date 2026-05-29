@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">XOrders trading dashboard guide</title>
+  <desc id="desc">Annotated visual guide showing the left pool panel, center live chart, right order ticket, active orders, and activity log.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#07100d"/>
+      <stop offset="0.48" stop-color="#05070b"/>
+      <stop offset="1" stop-color="#0a0f18"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" x2="1">
+      <stop offset="0" stop-color="#42f5b9"/>
+      <stop offset="1" stop-color="#26e6ff"/>
+    </linearGradient>
+    <style>
+      .panel{fill:#0b0f0e;stroke:rgba(255,255,255,.14);stroke-width:1.5}
+      .soft{fill:rgba(255,255,255,.04);stroke:rgba(255,255,255,.1);stroke-width:1}
+      .txt{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#f6f8ff}
+      .muted{fill:rgba(255,255,255,.58)}
+      .label{fill:#42f5b9;font-size:16px;font-weight:700}
+      .small{font-size:14px}
+      .head{font-size:26px;font-weight:800}
+      .body{font-size:18px;font-weight:650}
+      .note{font-size:15px}
+    </style>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <circle cx="170" cy="40" r="210" fill="#42f5b9" opacity=".08"/>
+  <circle cx="1110" cy="120" r="260" fill="#26e6ff" opacity=".07"/>
+
+  <rect x="38" y="34" width="1204" height="58" rx="8" class="panel"/>
+  <text x="64" y="70" class="txt head">XOrders</text>
+  <text x="196" y="69" class="txt muted small">Stop-loss and take-profit hooks on X Layer</text>
+  <rect x="1020" y="49" width="178" height="28" rx="6" fill="#101614" stroke="rgba(255,255,255,.16)"/>
+  <text x="1052" y="68" class="txt small">Wallet Connected</text>
+
+  <rect x="38" y="116" width="270" height="460" rx="8" class="panel"/>
+  <text x="60" y="150" class="txt label">1. Pool + Hook</text>
+  <rect x="60" y="172" width="226" height="76" rx="8" fill="#0e3b32" stroke="#42f5b9"/>
+  <text x="78" y="202" class="txt body">WOKB / USDT0</text>
+  <text x="78" y="226" class="txt muted small">Hook: 0x4613...C040</text>
+  <rect x="60" y="270" width="104" height="70" rx="7" class="soft"/>
+  <rect x="182" y="270" width="104" height="70" rx="7" class="soft"/>
+  <rect x="60" y="358" width="226" height="42" rx="7" fill="url(#accent)"/>
+  <text x="104" y="385" class="txt body" fill="#06110e">Open Explorer</text>
+  <text x="60" y="438" class="txt muted note">Use this panel to verify the</text>
+  <text x="60" y="462" class="txt muted note">live hook, pool id, chain, fee,</text>
+  <text x="60" y="486" class="txt muted note">and X Layer deployment state.</text>
+
+  <rect x="330" y="116" width="560" height="318" rx="8" class="panel"/>
+  <text x="354" y="150" class="txt label">2. Live Pool Chart</text>
+  <text x="354" y="178" class="txt body">StateView price: WOKB / USDT0</text>
+  <polyline points="360,336 430,328 500,316 570,300 640,288 710,270 780,256 850,232" fill="none" stroke="#26e6ff" stroke-width="4"/>
+  <line x1="360" y1="344" x2="860" y2="344" stroke="rgba(255,255,255,.09)"/>
+  <line x1="360" y1="278" x2="860" y2="278" stroke="rgba(255,255,255,.06)"/>
+  <line x1="360" y1="212" x2="860" y2="212" stroke="rgba(255,255,255,.06)"/>
+  <rect x="754" y="142" width="104" height="34" rx="17" fill="#123a31" stroke="#42f5b9"/>
+  <text x="772" y="164" class="txt small">$88.00</text>
+
+  <rect x="330" y="456" width="560" height="220" rx="8" class="panel"/>
+  <text x="354" y="490" class="txt label">3. Active Orders</text>
+  <rect x="354" y="514" width="512" height="42" rx="6" class="soft"/>
+  <text x="372" y="540" class="txt small">#3 Stop-Loss</text>
+  <text x="520" y="540" class="txt small">0.00075 WOKB left</text>
+  <text x="718" y="540" class="txt small">Partially Filled</text>
+  <rect x="354" y="574" width="512" height="42" rx="6" class="soft"/>
+  <text x="372" y="600" class="txt small">Cancel, inspect, and track onchain status from events.</text>
+
+  <rect x="912" y="116" width="330" height="390" rx="8" class="panel"/>
+  <text x="936" y="150" class="txt label">4. Place XOrder</text>
+  <rect x="936" y="174" width="282" height="42" rx="7" class="soft"/>
+  <text x="956" y="201" class="txt small">Stop-Loss | Take-Profit | Trailing</text>
+  <rect x="936" y="236" width="134" height="42" rx="7" class="soft"/>
+  <rect x="1084" y="236" width="134" height="42" rx="7" class="soft"/>
+  <text x="966" y="263" class="txt small">Sell WOKB</text>
+  <text x="1108" y="263" class="txt small">Sell USDT0</text>
+  <rect x="936" y="300" width="282" height="46" rx="7" class="soft"/>
+  <text x="956" y="329" class="txt muted small">Amount to escrow</text>
+  <rect x="936" y="366" width="282" height="46" rx="7" class="soft"/>
+  <text x="956" y="395" class="txt muted small">Trigger price</text>
+  <rect x="936" y="436" width="282" height="44" rx="8" fill="url(#accent)"/>
+  <text x="1004" y="464" class="txt body" fill="#06110e">Place Onchain Order</text>
+
+  <rect x="912" y="528" width="330" height="148" rx="8" class="panel"/>
+  <text x="936" y="562" class="txt label">5. Activity</text>
+  <text x="936" y="594" class="txt muted note">OrderPlaced, OrderTriggered,</text>
+  <text x="936" y="618" class="txt muted note">OrderFilled, and OrderCancelled</text>
+  <text x="936" y="642" class="txt muted note">come from real X Layer logs.</text>
+</svg>

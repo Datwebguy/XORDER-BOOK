@@ -63,6 +63,78 @@ NEXT_PUBLIC_XORDERS_POOL_ID=...
 NEXT_PUBLIC_XORDERS_DEPLOY_BLOCK=...
 ```
 
+## Platform User Guide
+
+XOrders has two main surfaces:
+
+- Landing page `/`: project overview, deployed-network context, and Launch App entry point.
+- Trading app `/app`: live pool chart, order ticket, wallet orders, and hook event activity.
+
+### Dashboard Map
+
+![XOrders trading dashboard guide](docs/images/xorders-dashboard-guide.svg)
+
+1. **Pool + Hook panel**: confirms the live WOKB / USDT0 market, hook address, PoolManager, StateView, deploy block, fee tier, and X Layer chain id.
+2. **Live pool chart**: reads the configured v4 pool price from `StateView`. This is not mock chart data.
+3. **Active Orders**: shows real wallet-owned orders indexed from `OrderPlaced`, `OrderTriggered`, `OrderFilled`, and `OrderCancelled` logs.
+4. **Place XOrder ticket**: creates real escrow-backed stop-loss, take-profit, or trailing-stop orders through the deployed hook.
+5. **Activity panel**: shows recent hook events with explorer links for transaction verification.
+
+### How To Place An Order
+
+![How to place an XOrder](docs/images/xorders-place-order-flow.svg)
+
+1. Connect an injected EVM wallet such as OKX Wallet or MetaMask.
+2. Make sure the wallet is on X Layer Mainnet, Chain ID `196`.
+3. Open `/app` and confirm the Pool + Hook panel shows:
+   - Hook: `0x461332830E361576D7E0A9F2675FD202Ee49C040`
+   - Market: `WOKB / USDT0`
+   - Pool ID: `0x3e86941d6d3a4ae9ea7adb16e510d13d987c164fcd554abbff486b060ec60cb3`
+4. In the order ticket, choose the order type:
+   - **Stop-Loss**: triggers when price moves against your position.
+   - **Take-Profit**: triggers when price reaches your profit target.
+   - **Trailing Stop**: adjusts the trigger as the market moves in your favor.
+5. Choose the sell side:
+   - **Sell WOKB** if you want to escrow WOKB and receive USDT0 when triggered.
+   - **Sell USDT0** if you want to escrow USDT0 and receive WOKB when triggered.
+6. Enter amount, trigger price, max fill percent, and optional trailing percent.
+7. Click **Approve Hook** so the hook can escrow the selected token.
+8. Click **Place Onchain Order** and confirm the wallet transaction.
+9. After confirmation, the order appears in Active Orders once the hook log is indexed.
+
+### Order Lifecycle
+
+![XOrders onchain order lifecycle](docs/images/xorders-order-lifecycle.svg)
+
+The order lifecycle is fully onchain:
+
+1. `OrderPlaced`: the hook escrows the input token and records the trigger.
+2. `afterSwap()`: each real v4 pool swap lets the hook compare the current pool price with open thresholds.
+3. `OrderTriggered`: when the price crosses the threshold, the hook marks a fillable slice.
+4. `OrderFilled`: a keeper, UI executor, or settlement flow fills triggered liquidity.
+5. Remaining balance stays open for partial execution, or the owner can cancel the order.
+
+### Reading Active Orders
+
+The Active Orders table shows:
+
+| Column | Meaning |
+| --- | --- |
+| Order | Onchain order id emitted by the hook |
+| Type | Stop-Loss, Take-Profit, or Trailing Stop |
+| Owner | Wallet that created the order |
+| Amount | Original escrowed input amount |
+| Trigger | Human-readable trigger price in USDT0 per WOKB |
+| Remaining | Input amount still available after partial fills |
+| Status | Open, Triggered, Partially Filled, Filled, or Cancelled |
+
+### Common User Notes
+
+- If orders do not appear instantly, wait for the X Layer RPC indexer pass. The frontend scans logs in small batches because the public RPC limits `eth_getLogs` to 100 blocks per request.
+- If the chart says no pool, check `NEXT_PUBLIC_XORDERS_POOL_ID` in Vercel or `.env.local`.
+- If the order buttons are disabled, connect a wallet and ensure the wallet is on X Layer Mainnet.
+- If approval succeeds but order placement fails, confirm the token balance and the exact sell token selected in the order ticket.
+
 ## Contracts
 
 Install Foundry, then:
